@@ -1,6 +1,6 @@
 type Item = {
   id: string;
-  imageUrl: string;
+  imageUrls: string[];
   name: string;
   description: string;
 };
