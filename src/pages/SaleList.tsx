@@ -1,12 +1,27 @@
 import { Grid } from "@mui/material";
+import { getDocs } from "firebase/firestore";
+import { useState } from "react";
 import ItemCard from "../components/ItemCard";
+import { itemsColRef } from "../helpers/firebase";
 import Item from "../models/Item";
 
-type SaleListProps = {
-  items: Item[];
-};
+export default function SaleList() {
+  const [items, setItems] = useState<Item[]>([]);
 
-export default function SaleList({ items }: SaleListProps) {
+  getDocs(itemsColRef).then((snapshot) => {
+    let dbItems: Item[] = [];
+    snapshot.docs.forEach((doc) => {
+      let data = doc.data();
+      dbItems.push({
+        id: doc.id,
+        imageUrls: data.imageUrls,
+        name: data.name,
+        description: data.description,
+      });
+    });
+    setItems(dbItems);
+  });
+
   return (
     <Grid container spacing={4} rowSpacing={4}>
       {items.map((item) => (
