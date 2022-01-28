@@ -1,11 +1,13 @@
-import { getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 import { Box, Grid } from "@mui/material";
 
 import ItemCard from "../components/ItemCard";
-import { itemsColRef } from "../helpers/firebase";
-import Item from "../models/Item";
+import db from "../helpers/firebase";
+import Item, { itemConverter } from "../models/Item";
+
+const itemsColRef = collection(db, "items").withConverter(itemConverter);
 
 export default function SaleList() {
   const [items, setItems] = useState<Item[]>([]);
@@ -14,13 +16,7 @@ export default function SaleList() {
     getDocs(itemsColRef).then((snapshot) => {
       let dbItems: Item[] = [];
       snapshot.forEach((doc) => {
-        let data = doc.data();
-        dbItems.push({
-          id: doc.id,
-          imageUrls: data.imageUrls,
-          name: data.name,
-          description: data.description,
-        });
+        dbItems.push(doc.data());
       });
       setItems(dbItems);
     });
