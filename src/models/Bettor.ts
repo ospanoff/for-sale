@@ -15,18 +15,15 @@ class Bettor {
 
 export default Bettor;
 
-export const itemBettorConverter = {
-  toFirestore(item: WithFieldValue<Bettor>): DocumentData {
-    return {
-      email: item.email,
-      amount: item.amount,
-    };
+export const bettorConverter = {
+  toFirestore(_item: WithFieldValue<Bettor>): DocumentData {
+    throw new Error("Not implemented");
   },
   fromFirestore(
     snapshot: QueryDocumentSnapshot,
     options: SnapshotOptions
   ): Bettor {
     const data = snapshot.data(options);
-    return new Bettor(data.id, data.email, data.amount);
+    return new Bettor(snapshot.id, data.email, data.amount);
   },
 };

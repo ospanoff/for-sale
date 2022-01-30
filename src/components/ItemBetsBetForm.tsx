@@ -1,3 +1,4 @@
+import { addDoc, collection, doc, serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
 
 import {
@@ -10,18 +11,28 @@ import {
   Typography,
 } from "@mui/material";
 
+import db from "../helpers/firebase";
+
 type ItemBetsBetFormProps = {
   itemId: string;
   itemPrice: number;
 };
+
+const bettorsColRef = collection(db, "bettors");
 
 export default function ItemBetsBetForm({
   itemId,
   itemPrice,
 }: ItemBetsBetFormProps) {
   const [betAmount, setBetAmount] = useState(itemPrice);
-  const bet = () => {
-    alert(`You bet ${betAmount} for item ${itemId}`);
+  const bet = async () => {
+    const itemDocRef = doc(db, "items", itemId);
+    await addDoc(bettorsColRef, {
+      createdAt: serverTimestamp(),
+      email: "test@asd.com",
+      amount: betAmount,
+      item: itemDocRef,
+    });
   };
 
   return (
