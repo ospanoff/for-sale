@@ -8,6 +8,7 @@ import {
   Icon,
   InputAdornment,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 
@@ -16,18 +17,25 @@ import db from "../helpers/firebase";
 type ItemBetsBetFormProps = {
   itemId: string;
   itemPrice: number;
+  userHasBet: boolean;
+  setUserHasBet: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const bettorsColRef = collection(db, "bettors");
+const betsColRef = collection(db, "bets");
 
 export default function ItemBetsBetForm({
   itemId,
   itemPrice,
+  userHasBet,
+  setUserHasBet,
 }: ItemBetsBetFormProps) {
   const [betAmount, setBetAmount] = useState(itemPrice);
+
+  const itemDocRef = doc(db, "items", itemId);
+
   const bet = async () => {
-    const itemDocRef = doc(db, "items", itemId);
-    await addDoc(bettorsColRef, {
+    setUserHasBet(true);
+    await addDoc(betsColRef, {
       createdAt: serverTimestamp(),
       email: "test@asd.com",
       amount: betAmount,
@@ -58,9 +66,13 @@ export default function ItemBetsBetForm({
           />
         </Grid>
         <Grid item sx={{ display: "flex", alignItems: "center" }}>
-          <Button color="secondary" onClick={bet}>
-            <Icon>person_add</Icon> Queue up
-          </Button>
+          <Tooltip title={userHasBet ? "You have already placed a bet" : ""}>
+            <span>
+              <Button color="secondary" onClick={bet} disabled={userHasBet}>
+                <Icon>person_add</Icon> Queue up
+              </Button>
+            </span>
+          </Tooltip>
         </Grid>
       </Grid>
     </Box>

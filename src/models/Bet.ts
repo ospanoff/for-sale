@@ -5,7 +5,7 @@ import {
   WithFieldValue,
 } from "firebase/firestore";
 
-class Bettor {
+class Bet {
   constructor(
     readonly id: string,
     readonly email: string,
@@ -13,17 +13,17 @@ class Bettor {
   ) {}
 }
 
-export default Bettor;
+export default Bet;
 
-export const bettorConverter = {
-  toFirestore(_item: WithFieldValue<Bettor>): DocumentData {
+export const betConverter = {
+  toFirestore(_item: WithFieldValue<Bet>): DocumentData {
     throw new Error("Not implemented");
   },
   fromFirestore(
     snapshot: QueryDocumentSnapshot,
     options: SnapshotOptions
-  ): Bettor {
+  ): Bet {
     const data = snapshot.data(options);
-    return new Bettor(snapshot.id, data.email, data.amount);
+    return new Bet(snapshot.id, data.email, data.amount);
   },
 };
