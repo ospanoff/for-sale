@@ -1,10 +1,13 @@
 import { Link as RouterLink } from "react-router-dom";
 
-import { AppBar, Box, Button, Toolbar } from "@mui/material";
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 
+import useAuth from "../helpers/auth";
 import { ReactComponent as Logo } from "../logo.svg";
 
 export default function Navbar() {
+  const { userEmail, logout } = useAuth();
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -15,7 +18,14 @@ export default function Navbar() {
             </Button>
           </Box>
 
-          <Button color="inherit">Login</Button>
+          {userEmail !== null && (
+            <>
+              <Typography variant="body2">{userEmail}</Typography>
+              <Button color="inherit" onClick={logout}>
+                Logout
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </Box>
