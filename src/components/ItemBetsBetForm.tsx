@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, serverTimestamp } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { useState } from "react";
 
 import {
@@ -22,8 +22,6 @@ type ItemBetsBetFormProps = {
   setUserHasBet: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const betsColRef = collection(db, "bets");
-
 export default function ItemBetsBetForm({
   itemId,
   itemPrice,
@@ -33,15 +31,13 @@ export default function ItemBetsBetForm({
   const [betAmount, setBetAmount] = useState(itemPrice);
   const { userEmail } = useAuth();
 
-  const itemDocRef = doc(db, "items", itemId);
+  const betDocRef = doc(db, "items", itemId, "bets", userEmail!);
 
   const bet = async () => {
     setUserHasBet(true);
-    await addDoc(betsColRef, {
+    await setDoc(betDocRef, {
       createdAt: serverTimestamp(),
-      email: userEmail,
       amount: betAmount,
-      item: itemDocRef,
     });
   };
 

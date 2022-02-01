@@ -1,10 +1,7 @@
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Grid, Typography } from "@mui/material";
 
-import useAuth from "../helpers/auth";
-import db from "../helpers/firebase";
 import Item from "../models/Item";
 import ItemBetsBetForm from "./ItemBetsBetForm";
 import ItemBetsList from "./ItemBetsList";
@@ -13,24 +10,8 @@ type ItemBetsProps = {
   item: Item;
 };
 
-const betsColRef = collection(db, "bets");
-
 export default function ItemBets({ item }: ItemBetsProps) {
-  const [userHasBet, setUserHasBet] = useState(false);
-  const { userEmail } = useAuth();
-
-  const itemDocRef = doc(db, "items", item.id);
-
-  useEffect(() => {
-    const betsQuery = query(
-      betsColRef,
-      where("item", "==", itemDocRef),
-      where("email", "==", userEmail)
-    );
-    getDocs(betsQuery).then((querySnapshot) => {
-      setUserHasBet(!querySnapshot.empty);
-    });
-  }, [itemDocRef, userEmail]);
+  const [userHasBet, setUserHasBet] = useState(true);
 
   return (
     <Grid container spacing={2}>

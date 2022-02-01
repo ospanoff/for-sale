@@ -5,7 +5,6 @@ import {
   onSnapshot,
   orderBy,
   query,
-  where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
@@ -29,8 +28,6 @@ type ItemBetsListProps = {
   setUserHasBet: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const betsColRef = collection(db, "bets").withConverter(betConverter);
-
 export default function ItemBetsList({
   itemId,
   setUserHasBet,
@@ -39,24 +36,31 @@ export default function ItemBetsList({
   const { userEmail } = useAuth();
 
   useEffect(() => {
-    const itemDocRef = doc(db, "items", itemId);
+    const betsColRef = collection(db, "items", itemId, "bets").withConverter(
+      betConverter
+    );
     const betsQuery = query(
       betsColRef,
-      where("item", "==", itemDocRef),
       orderBy("amount", "desc"),
       orderBy("createdAt")
     );
     onSnapshot(betsQuery, (querySnapshot) => {
       let dbBets: Bet[] = [];
+      let userHasBet = false;
       querySnapshot.forEach((doc) => {
-        dbBets.push(doc.data());
+        const bet = doc.data();
+        dbBets.push(bet);
+        if (bet.email === userEmail) {
+          userHasBet = true;
+        }
       });
       setBets(dbBets);
+      setUserHasBet(userHasBet);
     });
-  }, [itemId]);
+  }, [itemId, userEmail, setUserHasBet]);
 
-  const removeBet = async (betId: string) => {
-    const betDocRef = doc(db, "bets", betId);
+  const removeBet = async (bettorEmail: string) => {
+    const betDocRef = doc(db, "items", itemId, "bets", bettorEmail);
     await deleteDoc(betDocRef);
     setUserHasBet(false);
   };
@@ -69,13 +73,13 @@ export default function ItemBetsList({
     <List>
       {bets.map((bet) => (
         <ListItem
-          key={bet.id}
+          key={bet.email}
           secondaryAction={
             bet.email === userEmail && (
               <IconButton
                 edge="end"
                 aria-label="delete"
-                onClick={() => removeBet(bet.id)}
+                onClick={() => removeBet(bet.email)}
               >
                 <Icon>person_remove</Icon>
               </IconButton>

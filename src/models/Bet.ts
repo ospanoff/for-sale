@@ -6,11 +6,7 @@ import {
 } from "firebase/firestore";
 
 class Bet {
-  constructor(
-    readonly id: string,
-    readonly email: string,
-    readonly amount: number
-  ) {}
+  constructor(readonly email: string, readonly amount: number) {}
 }
 
 export default Bet;
@@ -24,6 +20,6 @@ export const betConverter = {
     options: SnapshotOptions
   ): Bet {
     const data = snapshot.data(options);
-    return new Bet(snapshot.id, data.email, data.amount);
+    return new Bet(snapshot.id, data.amount);
   },
 };
