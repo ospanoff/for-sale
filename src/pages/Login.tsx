@@ -1,5 +1,8 @@
-import { Button, Grid } from "@mui/material";
 import { Location, Navigate, useLocation, useNavigate } from "react-router-dom";
+
+import { Button, Grid, Typography } from "@mui/material";
+
+import { EMAIL_DOMAIN } from "../firebase-config";
 import useAuth from "../helpers/auth";
 
 export function Login() {
@@ -15,15 +18,32 @@ export function Login() {
 
   if (userEmail === null) {
     return (
-      <Grid container>
+      <Grid
+        container
+        sx={{
+          alignItems: "center",
+          mt: "10%",
+        }}
+      >
         <Grid
           item
           xs={12}
           sx={{
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
-            height: "50vh",
+          }}
+        >
+          <Typography variant="h6" gutterBottom paragraph textAlign="center">
+            You can only use @{EMAIL_DOMAIN} emails. Otherwise you'll be logged
+            out!
+          </Typography>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
           }}
         >
           <Button onClick={signin}>

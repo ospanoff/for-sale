@@ -6,6 +6,7 @@ import {
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 
+import { EMAIL_DOMAIN } from "../firebase-config";
 import { auth } from "./firebase";
 
 const provider = new GoogleAuthProvider();
@@ -38,7 +39,14 @@ export default function AuthProvider({
   const value = {
     userEmail,
     async login() {
-      signInWithPopup(auth, provider);
+      signInWithPopup(auth, provider).then((result) => {
+        const user = result.user;
+        const isDev =
+          !process.env.NODE_ENV || process.env.NODE_ENV === "development";
+        if (!isDev && user.email?.split("@").pop() !== EMAIL_DOMAIN) {
+          signOut(auth);
+        }
+      });
     },
     async logout() {
       signOut(auth);
