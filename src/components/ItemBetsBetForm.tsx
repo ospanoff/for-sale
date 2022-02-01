@@ -31,6 +31,10 @@ export default function ItemBetsBetForm({
   const [betAmount, setBetAmount] = useState(itemPrice);
   const { userEmail } = useAuth();
 
+  const isValidAmount = () => {
+    return betAmount >= itemPrice && (betAmount - itemPrice) % 100 === 0;
+  };
+
   const betDocRef = doc(db, "items", itemId, "bets", userEmail!);
 
   const bet = async () => {
@@ -44,6 +48,21 @@ export default function ItemBetsBetForm({
   return (
     <Box component="form">
       <Grid container spacing={1}>
+        <Grid item xs={12}>
+          Betting rules
+          <Tooltip
+            title={
+              <span>
+                To prevent spam using low value increases and incentify people
+                to increase only when they need the item, you can only increase
+                by multiple of 100 SEK or bet the same amount to queue up
+              </span>
+            }
+          >
+            <Icon sx={{ fontSize: 20 }}>info</Icon>
+          </Tooltip>
+        </Grid>
+
         <Grid item sx={{ display: "flex", alignItems: "center" }}>
           <Typography>I give</Typography>
         </Grid>
@@ -52,7 +71,10 @@ export default function ItemBetsBetForm({
             id="amount"
             type="number"
             value={betAmount}
-            onChange={(event) => setBetAmount(parseInt(event.target.value))}
+            inputProps={{ step: 100 }}
+            onChange={(event) =>
+              setBetAmount(parseInt(event.target.value || "0"))
+            }
             autoComplete="off"
             size="small"
             style={{ width: "130px" }}
@@ -61,12 +83,17 @@ export default function ItemBetsBetForm({
                 <InputAdornment position="start">SEK</InputAdornment>
               ),
             }}
+            error={!isValidAmount()}
           />
         </Grid>
         <Grid item sx={{ display: "flex", alignItems: "center" }}>
           <Tooltip title={userHasBet ? "You have already placed a bet" : ""}>
             <span>
-              <Button color="secondary" onClick={bet} disabled={userHasBet}>
+              <Button
+                color="secondary"
+                onClick={bet}
+                disabled={userHasBet || !isValidAmount()}
+              >
                 <Icon>person_add</Icon> Queue up
               </Button>
             </span>
