@@ -20,6 +20,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import useAuth from "../helpers/auth";
 import db from "../helpers/firebase";
 import Bet, { betConverter } from "../models/Bet";
 
@@ -35,6 +36,7 @@ export default function ItemBetsList({
   setUserHasBet,
 }: ItemBetsListProps) {
   const [bets, setBets] = useState<Bet[]>([]);
+  const { userEmail } = useAuth();
 
   useEffect(() => {
     const itemDocRef = doc(db, "items", itemId);
@@ -69,7 +71,7 @@ export default function ItemBetsList({
         <ListItem
           key={bet.id}
           secondaryAction={
-            bet.email === "test@asd.com" && (
+            bet.email === userEmail && (
               <IconButton
                 edge="end"
                 aria-label="delete"

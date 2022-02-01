@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { Grid, Typography } from "@mui/material";
 
+import useAuth from "../helpers/auth";
 import db from "../helpers/firebase";
 import Item from "../models/Item";
 import ItemBetsBetForm from "./ItemBetsBetForm";
@@ -16,6 +17,7 @@ const betsColRef = collection(db, "bets");
 
 export default function ItemBets({ item }: ItemBetsProps) {
   const [userHasBet, setUserHasBet] = useState(false);
+  const { userEmail } = useAuth();
 
   const itemDocRef = doc(db, "items", item.id);
 
@@ -23,12 +25,12 @@ export default function ItemBets({ item }: ItemBetsProps) {
     const betsQuery = query(
       betsColRef,
       where("item", "==", itemDocRef),
-      where("email", "==", "test@asd.com")
+      where("email", "==", userEmail)
     );
     getDocs(betsQuery).then((querySnapshot) => {
       setUserHasBet(!querySnapshot.empty);
     });
-  }, [itemDocRef]);
+  }, [itemDocRef, userEmail]);
 
   return (
     <Grid container spacing={2}>

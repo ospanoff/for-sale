@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import useAuth from "../helpers/auth";
 import db from "../helpers/firebase";
 
 type ItemBetsBetFormProps = {
@@ -30,6 +31,7 @@ export default function ItemBetsBetForm({
   setUserHasBet,
 }: ItemBetsBetFormProps) {
   const [betAmount, setBetAmount] = useState(itemPrice);
+  const { userEmail } = useAuth();
 
   const itemDocRef = doc(db, "items", itemId);
 
@@ -37,7 +39,7 @@ export default function ItemBetsBetForm({
     setUserHasBet(true);
     await addDoc(betsColRef, {
       createdAt: serverTimestamp(),
-      email: "test@asd.com",
+      email: userEmail,
       amount: betAmount,
       item: itemDocRef,
     });
