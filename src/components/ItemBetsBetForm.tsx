@@ -29,19 +29,20 @@ export default function ItemBetsBetForm({
   setUserHasBet,
 }: ItemBetsBetFormProps) {
   const [betAmount, setBetAmount] = useState(itemPrice);
-  const { userEmail } = useAuth();
+  const { user } = useAuth();
 
   const isValidAmount = () => {
     return betAmount >= itemPrice && (betAmount - itemPrice) % 100 === 0;
   };
 
-  const betDocRef = doc(db, "items", itemId, "bets", userEmail!);
+  const betDocRef = doc(db, "items", itemId, "bets", user!.email!);
 
   const bet = async () => {
     setUserHasBet(true);
     await setDoc(betDocRef, {
       createdAt: serverTimestamp(),
       amount: betAmount,
+      avatarUrl: user!.photoURL,
     });
   };
 

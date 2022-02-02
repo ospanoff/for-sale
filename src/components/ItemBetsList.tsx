@@ -36,7 +36,7 @@ export default function ItemBetsList({
   setUserHasBet,
 }: ItemBetsListProps) {
   const [bets, setBets] = useState<Bet[]>([]);
-  const { userEmail } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const betsColRef = collection(db, "items", itemId, "bets").withConverter(
@@ -53,14 +53,14 @@ export default function ItemBetsList({
       querySnapshot.forEach((doc) => {
         const bet = doc.data();
         dbBets.push(bet);
-        if (bet.email === userEmail) {
+        if (bet.email === user!.email!) {
           userHasBet = true;
         }
       });
       setBets(dbBets);
       setUserHasBet(userHasBet);
     });
-  }, [itemId, userEmail, setUserHasBet]);
+  }, [itemId, user, setUserHasBet]);
 
   const removeBet = async (bettorEmail: string) => {
     const betDocRef = doc(db, "items", itemId, "bets", bettorEmail);
@@ -85,14 +85,14 @@ export default function ItemBetsList({
           secondaryAction={
             <Grid container spacing={2}>
               <Grid item>
-                {userEmail === bet.email && (
+                {user!.email! === bet.email && (
                   <IconButton edge="end" onClick={() => removeBet(bet.email)}>
                     <Icon>person_remove</Icon>
                   </IconButton>
                 )}
               </Grid>
               <Grid item>
-                {userEmail === ADMIN_EMAIL && (
+                {user!.email! === ADMIN_EMAIL && (
                   <IconButton edge="end" onClick={() => acceptBet(bet.email)}>
                     <Icon>recommend</Icon>
                   </IconButton>
@@ -102,8 +102,8 @@ export default function ItemBetsList({
           }
         >
           <ListItemAvatar>
-            <Avatar>
-              <Icon>face</Icon>
+            <Avatar src={bet.avatarUrl}>
+              {!bet.avatarUrl && <Icon>face</Icon>}
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary={bet.email} secondary={`${bet.amount} SEK`} />

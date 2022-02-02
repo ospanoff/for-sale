@@ -6,7 +6,7 @@ import useAuth from "../helpers/auth";
 import { ReactComponent as Logo } from "../logo.svg";
 
 export default function Navbar() {
-  const { userEmail, logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -18,9 +18,9 @@ export default function Navbar() {
             </Button>
           </Box>
 
-          {userEmail !== null && (
+          {user !== null && (
             <>
-              <Typography variant="body2">{userEmail}</Typography>
+              <Typography variant="body2">{user.email!}</Typography>
               <Button color="inherit" onClick={logout}>
                 Logout
               </Button>

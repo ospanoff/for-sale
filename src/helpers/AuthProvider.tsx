@@ -3,6 +3,7 @@ import {
   onAuthStateChanged,
   signInWithPopup,
   signOut,
+  User,
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 
@@ -12,7 +13,7 @@ import { auth } from "./firebase";
 const provider = new GoogleAuthProvider();
 
 interface AuthContextType {
-  userEmail: string | null;
+  user: User | null;
   login(): Promise<void>;
   logout(): Promise<void>;
 }
@@ -24,20 +25,16 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      if (user !== null) {
-        setUserEmail(user.email);
-      } else {
-        setUserEmail(null);
-      }
+      setUser(user);
     });
   }, []);
 
   const value = {
-    userEmail,
+    user,
     async login() {
       signInWithPopup(auth, provider).then((result) => {
         const user = result.user;

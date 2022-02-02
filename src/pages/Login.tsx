@@ -6,7 +6,7 @@ import { EMAIL_DOMAIN } from "../config";
 import useAuth from "../helpers/auth";
 
 export function Login() {
-  const { userEmail, login } = useAuth();
+  const { user, login } = useAuth();
   let navigate = useNavigate();
   let location = useLocation();
   const from = (location.state as { from?: Location })?.from?.pathname || "/";
@@ -16,7 +16,7 @@ export function Login() {
     navigate(from, { replace: true });
   };
 
-  if (userEmail === null) {
+  if (user === null) {
     return (
       <Grid
         container
