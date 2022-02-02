@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 
-import { EMAIL_DOMAIN } from "../firebase-config";
+import { EMAIL_DOMAIN } from "../config";
 import { auth } from "./firebase";
 
 const provider = new GoogleAuthProvider();

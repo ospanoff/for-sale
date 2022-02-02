@@ -21,7 +21,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { ADMIN_EMAIL } from "../firebase-config";
+import { ADMIN_EMAIL } from "../config";
 import useAuth from "../helpers/auth";
 import db from "../helpers/firebase";
 import Bet, { betConverter } from "../models/Bet";

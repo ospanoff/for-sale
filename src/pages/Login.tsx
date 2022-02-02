@@ -2,7 +2,7 @@ import { Location, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import { Button, Grid, Typography } from "@mui/material";
 
-import { EMAIL_DOMAIN } from "../firebase-config";
+import { EMAIL_DOMAIN } from "../config";
 import useAuth from "../helpers/auth";
 
 export function Login() {
