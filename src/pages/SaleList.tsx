@@ -1,4 +1,4 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 import { Box, Grid } from "@mui/material";
@@ -13,7 +13,8 @@ export default function SaleList() {
   const [items, setItems] = useState<Item[]>([]);
 
   useEffect(() => {
-    getDocs(itemsColRef).then((snapshot) => {
+    const itemsQuery = query(itemsColRef, where("soldTo", "==", null));
+    getDocs(itemsQuery).then((snapshot) => {
       let dbItems: Item[] = [];
       snapshot.forEach((doc) => {
         dbItems.push(doc.data());
