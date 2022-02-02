@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar";
 import AuthProvider from "./helpers/AuthProvider";
 import { RequireAuth } from "./helpers/RequireAuth";
 import ItemPage from "./pages/ItemPage";
+import ItemsUpload from "./pages/ItemsUpload";
 import { Login } from "./pages/Login";
 import SaleList from "./pages/SaleList";
 import appTheme from "./utils/theme";
@@ -37,6 +38,10 @@ function App() {
                 </RequireAuth>
               }
             />
+            {(!process.env.NODE_ENV ||
+              process.env.NODE_ENV === "development") && (
+              <Route path="upload" element={<ItemsUpload />} />
+            )}
             <Route path="login" element={<Login />} />
             <Route path="*" element={<Navigate replace to="/" />} />
           </Routes>
